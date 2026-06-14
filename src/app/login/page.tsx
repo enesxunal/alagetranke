@@ -71,8 +71,8 @@ export default function LoginPage() {
 
         <div className="mt-6 rounded-lg bg-white/5 p-3 text-xs text-gray-500">
           <p className="font-medium text-gray-400 mb-1">Demo (ohne Supabase):</p>
-          <p>admin@alagetrank.de — Admin Panel</p>
-          <p>pending@alagetrank.de — Onay bekleyen</p>
+          <p>admin@alagetraenke.de — Admin Panel</p>
+          <p>pending@alagetraenke.de — Onay bekleyen</p>
           <p>herhangi bir @ — Onaylı müşteri</p>
         </div>
       </Card>

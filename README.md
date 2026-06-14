@@ -34,8 +34,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 
 | E-Mail | Rolle |
 |--------|-------|
-| admin@alagetrank.de | Admin + freigegeben |
-| pending@alagetrank.de | Onay bekleyen müşteri |
+| admin@alagetraenke.de | Admin + freigegeben |
+| pending@alagetraenke.de | Onay bekleyen müşteri |
 | beliebige@email.de | Freigegebener Kunde |
 
 ## Features

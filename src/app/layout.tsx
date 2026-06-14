@@ -12,6 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://alagetraenke.de"),
   title: "Alagetränke GmbH — Getränke Cash & Carry",
   description:
     "Premium B2B Großhandel für Gastronomie. Bier, Softdrinks, Spirituosen und mehr.",

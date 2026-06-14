@@ -11,6 +11,7 @@ import {
 } from "react";
 import type { Profile, Order, OrderStatus } from "@/types/database.types";
 import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/env";
 
 interface AuthContextValue {
   user: Profile | null;
@@ -85,8 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const refreshProfile = useCallback(async () => {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    if (!supabaseUrl) {
+    if (!isSupabaseConfigured()) {
       loadDemoSession();
       setLoading(false);
       return;
@@ -132,14 +132,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(
     async (email: string, password: string) => {
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      if (!supabaseUrl) {
-        if (email === "admin@alagetrank.de") {
+      if (!isSupabaseConfigured()) {
+        if (email === "admin@alagetraenke.de") {
           localStorage.setItem("alagetrank-demo-user", "admin");
           setUser(DEMO_ADMIN);
           return {};
         }
-        if (email === "pending@alagetrank.de") {
+        if (email === "pending@alagetraenke.de") {
           localStorage.setItem("alagetrank-demo-user", "pending");
           setUser(DEMO_PENDING);
           return {};
@@ -166,8 +165,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = useCallback(
     async (data: RegisterData) => {
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      if (!supabaseUrl) {
+      if (!isSupabaseConfigured()) {
         localStorage.setItem("alagetrank-demo-user", "pending");
         setUser({ ...DEMO_PENDING, company_name: data.company_name, ust_id_nr: data.ust_id_nr, phone: data.phone });
         return {};
@@ -194,8 +192,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     localStorage.removeItem("alagetrank-demo-user");
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    if (supabaseUrl) {
+    if (isSupabaseConfigured()) {
       const supabase = createClient();
       await supabase.auth.signOut();
     }
