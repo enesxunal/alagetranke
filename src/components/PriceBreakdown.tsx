@@ -8,6 +8,7 @@ interface PriceBreakdownProps {
   pfand: number;
   vat: number;
   total: number;
+  discount?: number;
 }
 
 export function PriceBreakdown({
@@ -15,6 +16,7 @@ export function PriceBreakdown({
   pfand,
   vat,
   total,
+  discount,
 }: PriceBreakdownProps) {
   const { t, locale } = useTranslation();
   const fmt =
@@ -22,6 +24,9 @@ export function PriceBreakdown({
 
   const rows = [
     { label: t("cart_net_product"), value: netProduct },
+    ...(discount && discount > 0
+      ? [{ label: t("cart_discount"), value: -discount }]
+      : []),
     { label: t("cart_pfand"), value: pfand },
     { label: t("cart_vat"), value: vat },
   ];

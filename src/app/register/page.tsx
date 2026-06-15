@@ -48,7 +48,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="mx-auto max-w-md px-4 py-12">
+    <div className="mx-auto max-w-md px-4 py-8 sm:py-12">
       <Card>
         <h1 className="mb-2 text-2xl font-bold text-white">
           {t("register_title")}

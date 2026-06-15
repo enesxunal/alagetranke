@@ -34,15 +34,15 @@ export function Navbar() {
     pathname.startsWith("/products") && activeCategory === id;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/5 bg-black/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 lg:px-8">
-        <Link href="/" className="flex shrink-0 items-center">
+    <header className="sticky top-0 z-50 border-b border-white/5 bg-black/90 backdrop-blur-md safe-top">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2.5 sm:gap-4 sm:px-4 sm:py-3 lg:px-8">
+        <Link href="/" className="flex shrink-0 items-center min-w-0">
           <Image
             src="/logo.svg"
             alt="Alagetränke GmbH"
             width={180}
             height={34}
-            className="h-8 w-auto lg:h-9"
+            className="h-7 w-auto max-w-[140px] sm:max-w-none sm:h-8 lg:h-9"
             priority
           />
         </Link>
@@ -159,29 +159,31 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Tablet: horizontal category scroll */}
-      <div className="border-t border-white/5 bg-black/50 xl:hidden">
-        <div className="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 py-2 scrollbar-hide">
-          {categoryNavItems.map(({ id, icon: Icon }) => (
-            <Link
-              key={id}
-              href={`/products?category=${id}`}
-              className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-                isCategoryActive(id)
-                  ? "border-gold/40 bg-gold/10 text-gold"
-                  : "border-white/10 text-gray-400 hover:border-gold/20 hover:text-white"
-              }`}
-            >
-              <Icon className="h-3 w-3" />
-              {getCategoryLabel(locale, id)}
-            </Link>
-          ))}
+      {/* Tablet/mobile: horizontal category scroll — hidden when menu open */}
+      {!mobileOpen && (
+        <div className="border-t border-white/5 bg-black/50 xl:hidden">
+          <div className="mx-auto flex max-w-7xl gap-1.5 overflow-x-auto px-3 py-2 scrollbar-hide sm:px-4">
+            {categoryNavItems.map(({ id, icon: Icon }) => (
+              <Link
+                key={id}
+                href={`/products?category=${id}`}
+                className={`flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-[11px] font-medium transition-colors sm:px-3 sm:text-xs ${
+                  isCategoryActive(id)
+                    ? "border-gold/40 bg-gold/10 text-gold"
+                    : "border-white/10 text-gray-400 hover:border-gold/20 hover:text-white"
+                }`}
+              >
+                <Icon className="h-3 w-3" />
+                {getCategoryLabel(locale, id)}
+              </Link>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="border-t border-white/5 bg-surface px-4 py-4 xl:hidden">
+        <div className="border-t border-white/5 bg-surface px-3 py-4 max-h-[70vh] overflow-y-auto xl:hidden sm:px-4">
           <p className="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
             {t("nav_categories_subtitle")}
           </p>

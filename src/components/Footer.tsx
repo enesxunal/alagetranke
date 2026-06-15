@@ -8,9 +8,9 @@ export function Footer() {
   const { t } = useTranslation();
 
   return (
-    <footer className="border-t border-white/5 bg-surface">
-      <div className="mx-auto max-w-7xl px-4 py-12 lg:px-8">
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+    <footer className="border-t border-white/5 bg-surface safe-bottom">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12 lg:px-8">
+        <div className="grid gap-8 sm:gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <h3 className="mb-3 text-lg font-semibold text-gold">
               {t("footer_company")}
@@ -48,22 +48,13 @@ export function Footer() {
                 <Phone className="h-4 w-4 text-gold" />
                 {t("footer_mobile")}
               </div>
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-gold" />
+              <div className="flex items-center gap-2 min-w-0">
+                <Mail className="h-4 w-4 shrink-0 text-gold" />
                 <a
-                  href={`mailto:${t("footer_email")}`}
-                  className="hover:text-gold transition-colors"
+                  href={`mailto:${t("footer_contact_email")}`}
+                  className="truncate hover:text-gold transition-colors"
                 >
-                  {t("footer_email")}
-                </a>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-gold" />
-                <a
-                  href={`mailto:${t("footer_accounting")}`}
-                  className="hover:text-gold transition-colors"
-                >
-                  {t("footer_accounting")}
+                  {t("footer_contact_email")}
                 </a>
               </div>
             </div>

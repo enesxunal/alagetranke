@@ -45,8 +45,8 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={t("whatsapp_label")}
-      className={`group fixed right-5 z-50 flex h-[3.75rem] w-[3.75rem] items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-[#25D366]/40 ring-4 ring-[#25D366]/20 transition-all duration-300 hover:scale-110 hover:bg-[#20BD5A] hover:shadow-xl hover:shadow-[#25D366]/50 ${
-        cookieVisible ? "bottom-36 sm:bottom-32" : "bottom-5"
+      className={`group fixed right-4 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-[#25D366]/40 ring-4 ring-[#25D366]/20 transition-all duration-300 hover:scale-110 hover:bg-[#20BD5A] hover:shadow-xl hover:shadow-[#25D366]/50 safe-bottom sm:right-5 sm:h-[3.75rem] sm:w-[3.75rem] ${
+        cookieVisible ? "bottom-28 sm:bottom-32" : "bottom-4 sm:bottom-5"
       }`}
     >
       <WhatsAppIcon className="h-9 w-9" />

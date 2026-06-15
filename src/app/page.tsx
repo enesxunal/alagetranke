@@ -47,13 +47,13 @@ export default function HomePage() {
       {/* Promo strip */}
       <section className="relative overflow-hidden border-y border-gold/20 bg-gradient-to-r from-gold/10 via-gold/5 to-transparent">
         <div className="absolute inset-0 bg-[url('/products/hero-banner.jpg')] bg-cover bg-center opacity-10" />
-        <div className="relative mx-auto max-w-7xl px-4 py-8 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="relative mx-auto max-w-7xl px-4 py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:py-8 lg:px-8">
           <div>
-            <p className="text-xl font-bold text-gold">{t("promo_title")}</p>
+            <p className="text-lg font-bold text-gold sm:text-xl">{t("promo_title")}</p>
             <p className="text-sm text-gray-400 mt-1">{t("promo_subtitle")}</p>
           </div>
-          <Link href="/products">
-            <Button variant="primary" size="md">
+          <Link href="/products" className="w-full sm:w-auto">
+            <Button variant="primary" size="md" className="w-full sm:w-auto">
               {t("hero_cta")}
               <ArrowRight className="h-4 w-4" />
             </Button>
@@ -62,12 +62,12 @@ export default function HomePage() {
       </section>
 
       {/* Categories with images */}
-      <section className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
-        <h2 className="mb-2 text-2xl font-bold text-white">
+      <section className="mx-auto max-w-7xl px-4 py-10 sm:py-16 lg:px-8">
+        <h2 className="mb-2 text-xl font-bold text-white sm:text-2xl">
           {t("nav_categories")}
         </h2>
         <p className="mb-8 text-sm text-gray-500">{t("nav_categories_subtitle")}</p>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
           {categoryNavItems.map(({ id, icon: Icon, image }) => (
             <Link
               key={id}
@@ -118,8 +118,8 @@ export default function HomePage() {
 
       {/* Featured Products */}
       <section className="mx-auto max-w-7xl px-4 py-16 lg:px-8">
-        <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-white">{t("nav_products")}</h2>
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 sm:mb-8">
+          <h2 className="text-xl font-bold text-white sm:text-2xl">{t("nav_products")}</h2>
           <Link href="/products">
             <Button variant="ghost" size="sm">
               {t("hero_cta")}
@@ -127,7 +127,7 @@ export default function HomePage() {
             </Button>
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
           {featured.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

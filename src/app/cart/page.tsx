@@ -34,10 +34,10 @@ export default function CartPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
-      <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-white">{t("cart_title")}</h1>
-        <Button variant="ghost" size="sm" onClick={clearCart}>
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:py-8 lg:px-8">
+      <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-2xl font-bold text-white sm:text-3xl">{t("cart_title")}</h1>
+        <Button variant="ghost" size="sm" onClick={clearCart} className="self-start">
           <Trash2 className="h-4 w-4" />
           {t("cart_clear")}
         </Button>
@@ -48,27 +48,29 @@ export default function CartPage() {
           {items.map(({ product, quantityCases }) => (
             <div
               key={product.id}
-              className="flex gap-4 rounded-xl glass-panel p-4"
+              className="flex flex-col gap-3 rounded-xl glass-panel p-3 sm:flex-row sm:gap-4 sm:p-4"
             >
-              <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-white/5">
-                <ProductImage
-                  src={product.image_url}
-                  alt={product.name}
-                  category={product.category}
-                  sizes="80px"
-                />
+              <div className="flex gap-3 sm:gap-4">
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-white/5 sm:h-20 sm:w-20">
+                  <ProductImage
+                    src={product.image_url}
+                    alt={product.name}
+                    category={product.category}
+                    sizes="80px"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-white">{product.name}</h3>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    {product.units_per_case} Stk./{t("cart_quantity")} ·{" "}
+                    {formatEuro(product.unit_price_with_pfand, fmt)}/Stk.
+                  </p>
+                  <p className="mt-2 font-semibold text-gold">
+                    {formatEuro(getCasePrice(product) * quantityCases, fmt)}
+                  </p>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-white">{product.name}</h3>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  {product.units_per_case} Stk./{t("cart_quantity")} ·{" "}
-                  {formatEuro(product.unit_price_with_pfand, fmt)}/Stk.
-                </p>
-                <p className="mt-2 font-semibold text-gold">
-                  {formatEuro(getCasePrice(product) * quantityCases, fmt)}
-                </p>
-              </div>
-              <div className="flex flex-col items-end justify-between">
+              <div className="flex items-center justify-between border-t border-white/5 pt-3 sm:flex-col sm:items-end sm:justify-between sm:border-0 sm:pt-0">
                 <button
                   onClick={() => removeCase(product.id)}
                   className="text-xs text-red-400 hover:text-red-300"

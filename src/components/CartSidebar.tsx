@@ -30,8 +30,8 @@ export function CartSidebar() {
         className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
         onClick={closeCart}
       />
-      <aside className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col bg-surface shadow-2xl">
-        <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+      <aside className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col bg-surface shadow-2xl safe-top">
+        <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 sm:px-5 sm:py-4">
           <h2 className="text-lg font-semibold text-white">{t("cart_title")}</h2>
           <button
             onClick={closeCart}
@@ -112,7 +112,7 @@ export function CartSidebar() {
         </div>
 
         {items.length > 0 && (
-          <div className="border-t border-white/10 px-5 py-4 space-y-3">
+          <div className="border-t border-white/10 px-4 py-4 space-y-3 safe-bottom sm:px-5">
             <div className="space-y-1 text-sm">
               <div className="flex justify-between text-gray-400">
                 <span>{t("cart_net_product")}</span>

@@ -8,6 +8,8 @@ import {
   Package,
   ShoppingCart,
   Users,
+  Percent,
+  Mail,
 } from "lucide-react";
 import { useTranslation } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
@@ -17,6 +19,8 @@ const adminLinks = [
   { href: "/admin/products", icon: Package, labelKey: "admin_products" as const },
   { href: "/admin/orders", icon: ShoppingCart, labelKey: "admin_orders" as const },
   { href: "/admin/customers", icon: Users, labelKey: "admin_customers" as const },
+  { href: "/admin/campaigns", icon: Percent, labelKey: "admin_campaigns" as const },
+  { href: "/admin/email", icon: Mail, labelKey: "admin_email" as const },
 ];
 
 export default function AdminLayout({
@@ -44,18 +48,18 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gold">{t("admin_title")}</h1>
+    <div className="mx-auto max-w-7xl px-3 py-6 sm:px-4 sm:py-8 lg:px-8">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-xl font-bold text-gold sm:text-2xl">{t("admin_title")}</h1>
       </div>
-      <div className="flex flex-col gap-8 lg:flex-row">
+      <div className="flex flex-col gap-6 lg:flex-row lg:gap-8">
         <aside className="lg:w-56 shrink-0">
-          <nav className="space-y-1 rounded-xl glass-panel p-3">
+          <nav className="flex gap-2 overflow-x-auto rounded-xl glass-panel p-2 scrollbar-hide lg:flex-col lg:gap-1 lg:overflow-visible lg:p-3">
             {adminLinks.map(({ href, icon: Icon, labelKey }) => (
               <Link
                 key={href}
                 href={href}
-                className={`flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2.5 text-sm transition-colors whitespace-nowrap lg:w-full ${
                   pathname === href
                     ? "bg-gold/10 text-gold"
                     : "text-gray-400 hover:bg-white/5 hover:text-white"

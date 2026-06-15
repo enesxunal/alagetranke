@@ -32,7 +32,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="mx-auto flex min-h-[70vh] max-w-md items-center px-4 py-12">
+    <div className="mx-auto flex min-h-[60vh] max-w-md items-center px-4 py-8 sm:py-12">
       <Card className="w-full">
         <h1 className="mb-2 text-2xl font-bold text-white">{t("login_title")}</h1>
         <p className="mb-6 text-sm text-gray-500">
@@ -68,13 +68,6 @@ export default function LoginPage() {
             {t("nav_register")}
           </Link>
         </p>
-
-        <div className="mt-6 rounded-lg bg-white/5 p-3 text-xs text-gray-500">
-          <p className="font-medium text-gray-400 mb-1">Demo (ohne Supabase):</p>
-          <p>admin@alagetraenke.de — Admin Panel</p>
-          <p>pending@alagetraenke.de — Onay bekleyen</p>
-          <p>herhangi bir @ — Onaylı müşteri</p>
-        </div>
       </Card>
     </div>
   );

@@ -26,8 +26,7 @@ export default function ImpressumPage() {
           <p>
             Telefon: 02232 1507729<br />
             Mobil/WhatsApp: 0176 30716796<br />
-            E-Mail: info@alagetraenke.de<br />
-            Buchhaltung: Buchhaltung@alagetraenke.de
+            E-Mail: buchhaltung@alagetraenke.de
           </p>
         </section>
         <section>

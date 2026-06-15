@@ -44,9 +44,9 @@ export default function ProductsContent() {
   }, [products, category, search]);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:py-8 lg:px-8">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl font-bold text-white sm:text-3xl">
           {category
             ? getCategoryLabel(locale, category)
             : t("products_title")}
@@ -61,8 +61,37 @@ export default function ProductsContent() {
         )}
       </div>
 
+      {/* Mobile category filter */}
+      <div className="mb-6 lg:hidden">
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+          <button
+            onClick={() => setCategoryFilter(null)}
+            className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
+              !category
+                ? "border-gold/40 bg-gold/10 text-gold"
+                : "border-white/10 text-gray-400"
+            }`}
+          >
+            {t("products_all_categories")}
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setCategoryFilter(cat)}
+              className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap ${
+                category === cat
+                  ? "border-gold/40 bg-gold/10 text-gold"
+                  : "border-white/10 text-gray-400"
+              }`}
+            >
+              {getCategoryLabel(locale, cat)}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="flex flex-col gap-8 lg:flex-row">
-        <aside className="lg:w-56 shrink-0">
+        <aside className="hidden lg:block lg:w-56 shrink-0">
           <div className="sticky top-24 space-y-2 rounded-xl glass-panel p-4">
             <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-500">
               {t("products_all_categories")}
@@ -109,7 +138,7 @@ export default function ProductsContent() {
               {t("products_no_results")}
             </p>
           ) : (
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-4">
               {filtered.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}

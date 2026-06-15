@@ -18,7 +18,7 @@ export default function DatenschutzPage() {
             Alagetränke GmbH<br />
             Industriestraße 45<br />
             50389 Wesseling<br />
-            E-Mail: info@alagetraenke.de<br />
+            E-Mail: buchhaltung@alagetraenke.de<br />
             Telefon: 02232 1507729
           </p>
         </section>

@@ -12,6 +12,7 @@ import {
 import type { Profile, Order, OrderStatus } from "@/types/database.types";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { fetchUserOrders } from "@/lib/supabase/data";
 
 interface AuthContextValue {
   user: Profile | null;
@@ -41,6 +42,8 @@ const DEMO_ADMIN: Profile = {
   company_name: "Alagetränke GmbH",
   ust_id_nr: "DE123456789",
   phone: "022321507729",
+  contact_name: "Admin",
+  email: "admin@alagetraenke.de",
   is_approved: true,
   is_admin: true,
 };
@@ -50,6 +53,8 @@ const DEMO_USER: Profile = {
   company_name: "Demo Gastronomie KG",
   ust_id_nr: "DE987654321",
   phone: "017630716796",
+  contact_name: "Max Mustermann",
+  email: "demo@alagetraenke.de",
   is_approved: true,
   is_admin: false,
 };
@@ -59,6 +64,8 @@ const DEMO_PENDING: Profile = {
   company_name: "Neue Firma GmbH",
   ust_id_nr: "DE111222333",
   phone: "022321507729",
+  contact_name: "Anna Schmidt",
+  email: "pending@alagetraenke.de",
   is_approved: false,
   is_admin: false,
 };
@@ -110,15 +117,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .eq("id", authUser.id)
         .single();
 
-      if (profile) setUser(profile as Profile);
+      if (profile) {
+        setUser({
+          ...(profile as Profile),
+          email: (profile as Profile).email ?? authUser.email ?? null,
+        });
+      }
 
-      const { data: userOrders } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("user_id", authUser.id)
-        .order("created_at", { ascending: false });
-
-      if (userOrders) setOrders(userOrders as Order[]);
+      const userOrders = await fetchUserOrders(authUser.id);
+      setOrders(userOrders);
     } catch {
       loadDemoSession();
     } finally {

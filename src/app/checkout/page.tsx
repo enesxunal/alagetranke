@@ -1,13 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { MapPin, Truck, CreditCard, Banknote } from "lucide-react";
 import { useTranslation } from "@/context/LanguageContext";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
-import { saveOrder } from "@/context/AuthContext";
-import type { FulfillmentType, PaymentMethod } from "@/types/database.types";
+import type { FulfillmentType, OrderItem, PaymentMethod } from "@/types/database.types";
+import { createOrderDb, fetchActiveCampaigns } from "@/lib/supabase/data";
+import {
+  applyDiscountToSummary,
+  getApplicableDiscountPercent,
+} from "@/lib/discount";
+import { VAT_RATE, getCasePrice } from "@/lib/pfand";
 import { PriceBreakdown } from "@/components/PriceBreakdown";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -27,6 +32,31 @@ export default function CheckoutPage() {
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [discountPercent, setDiscountPercent] = useState(0);
+
+  useEffect(() => {
+    if (!user) return;
+    fetchActiveCampaigns().then((campaigns) => {
+      setDiscountPercent(
+        getApplicableDiscountPercent(
+          user.id,
+          items,
+          user.discount_percent ?? 0,
+          campaigns
+        )
+      );
+    });
+  }, [user, items]);
+
+  const pricing = useMemo(() => {
+    const result = applyDiscountToSummary(
+      summary.netProductTotal,
+      summary.pfandTotal,
+      VAT_RATE,
+      discountPercent
+    );
+    return result;
+  }, [summary, discountPercent]);
 
   if (!isAuthenticated || !canSeePrices) {
     return (
@@ -48,8 +78,19 @@ export default function CheckoutPage() {
     e.preventDefault();
     setLoading(true);
 
+    const orderId = `ORD-${Date.now()}`;
+    const orderItems: OrderItem[] = items.map((item) => ({
+      product_id: item.product.id,
+      product_name: item.product.name,
+      quantity_cases: item.quantityCases,
+      units_per_case: item.product.units_per_case,
+      unit_price_with_pfand: item.product.unit_price_with_pfand,
+      pfand_per_unit: item.product.pfand_per_unit,
+      line_total: getCasePrice(item.product) * item.quantityCases,
+    }));
+
     const order = {
-      id: `ORD-${Date.now()}`,
+      id: orderId,
       user_id: user!.id,
       status: "pending" as const,
       fulfillment_type: fulfillment,
@@ -58,17 +99,33 @@ export default function CheckoutPage() {
       delivery_city: fulfillment === "delivery" ? city : null,
       delivery_postal_code: fulfillment === "delivery" ? postal : null,
       delivery_notes: notes || null,
-      subtotal_net: summary.netProductTotal,
+      subtotal_net: pricing.adjustedNet,
       pfand_total: summary.pfandTotal,
-      vat_total: summary.vatTotal,
-      total: summary.grossTotal,
+      vat_total: pricing.vatTotal,
+      discount_total: pricing.discountTotal,
+      total: pricing.grossTotal,
       created_at: new Date().toISOString(),
     };
 
-    saveOrder(order);
-    clearCart();
-    setSuccess(true);
-    setLoading(false);
+    try {
+      await createOrderDb(order, orderItems);
+      fetch("/api/orders/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          order,
+          items: orderItems,
+          companyName: user!.company_name,
+          customerEmail: user!.email,
+        }),
+      }).catch(() => {});
+      clearCart();
+      setSuccess(true);
+    } catch {
+      alert(t("error_generic"));
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (success) {
@@ -96,7 +153,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
-      <h1 className="mb-8 text-3xl font-bold text-white">{t("checkout_title")}</h1>
+      <h1 className="mb-6 text-2xl font-bold text-white sm:mb-8 sm:text-3xl">{t("checkout_title")}</h1>
 
       <form onSubmit={handleSubmit}>
         <div className="grid gap-8 lg:grid-cols-3">
@@ -214,11 +271,17 @@ export default function CheckoutPage() {
 
           <div className="space-y-4">
             <PriceBreakdown
-              netProduct={summary.netProductTotal}
+              netProduct={pricing.adjustedNet}
               pfand={summary.pfandTotal}
-              vat={summary.vatTotal}
-              total={summary.grossTotal}
+              vat={pricing.vatTotal}
+              total={pricing.grossTotal}
+              discount={pricing.discountTotal}
             />
+            {discountPercent > 0 && (
+              <p className="text-sm text-gold text-center">
+                {t("dash_your_discount")}: {discountPercent}%
+              </p>
+            )}
             <Button
               type="submit"
               className="w-full"

@@ -38,16 +38,16 @@ export function ProductCard({ product }: ProductCardProps) {
           sizes="(max-width: 768px) 50vw, 25vw"
           className="object-cover transition-transform duration-500 hover:scale-105"
         />
-        <div className="absolute left-3 top-3 z-10">
-          <Badge variant="gold">
+        <div className="absolute left-2 top-2 z-10 sm:left-3 sm:top-3">
+          <Badge variant="gold" className="text-[10px] px-1.5 py-0.5 sm:text-xs sm:px-2 sm:py-1">
             {getCategoryLabel(locale, product.category)}
           </Badge>
         </div>
       </Link>
 
-      <div className="flex flex-1 flex-col p-4">
+      <div className="flex flex-1 flex-col p-3 sm:p-4">
         <Link href={`/products/${product.id}`}>
-          <h3 className="font-semibold text-white line-clamp-2 hover:text-gold transition-colors">
+          <h3 className="text-sm font-semibold text-white line-clamp-2 hover:text-gold transition-colors sm:text-base">
             {product.name}
           </h3>
         </Link>
@@ -57,10 +57,10 @@ export function ProductCard({ product }: ProductCardProps) {
             : "Einzelstück"}
         </p>
 
-        <div className="mt-auto pt-4">
+        <div className="mt-auto pt-3 sm:pt-4">
           {showPrices ? (
-            <div className="mb-3">
-              <p className="text-2xl font-bold text-gold">
+            <div className="mb-2 sm:mb-3">
+              <p className="text-lg font-bold text-gold sm:text-2xl">
                 {formatEuro(
                   product.unit_price_with_pfand,
                   locale === "tr" ? "tr-TR" : locale === "en" ? "en-GB" : "de-DE"

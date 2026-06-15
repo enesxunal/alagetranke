@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { useTranslation } from "@/context/LanguageContext";
 import { useProducts } from "@/context/ProductStoreContext";
@@ -9,8 +10,10 @@ import { getPfandPerUnit } from "@/lib/pfand";
 import { formatEuro } from "@/lib/pfand";
 import { getCategoryLabel } from "@/lib/i18n";
 import { categories } from "@/data/products";
+import { upsertProductDb, deleteProductDb } from "@/lib/supabase/data";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 
@@ -22,6 +25,7 @@ const emptyProduct: Omit<Product, "id"> = {
   units_per_case: 20,
   container_type: "glass_mehrweg",
   image_url: "/products/beer.jpg",
+  description: "",
   stock: 100,
   is_active: true,
 };
@@ -44,20 +48,32 @@ export default function AdminProductsPage() {
 
   const openEdit = (product: Product) => {
     setEditing(product);
-    setForm({ ...product });
+    setForm({
+      ...product,
+      description: product.description ?? "",
+    });
     setShowForm(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const pfand = getPfandPerUnit(form.container_type);
     const data = { ...form, pfand_per_unit: pfand };
 
     if (editing) {
       updateProduct(editing.id, data);
+      await upsertProductDb({ ...data, id: editing.id });
     } else {
-      addProduct({ ...data, id: `custom-${Date.now()}` });
+      const newProduct = { ...data, id: `custom-${Date.now()}` };
+      addProduct(newProduct);
+      await upsertProductDb(newProduct);
     }
     setShowForm(false);
+  };
+
+  const handleDelete = async (product: Product) => {
+    if (!confirm(`${product.name} deaktivieren?`)) return;
+    deleteProduct(product.id);
+    await deleteProductDb(product.id);
   };
 
   return (
@@ -75,6 +91,29 @@ export default function AdminProductsPage() {
           <h3 className="mb-4 font-semibold text-gold">
             {editing ? t("admin_edit_product") : t("admin_add_product")}
           </h3>
+
+          <div className="mb-6 flex flex-col gap-4 sm:flex-row">
+            <div className="relative h-40 w-40 shrink-0 overflow-hidden rounded-xl border border-white/10 bg-black/30">
+              <Image
+                src={form.image_url || "/products/beer.jpg"}
+                alt={form.name || "Preview"}
+                fill
+                className="object-cover"
+              />
+            </div>
+            <div className="flex-1 space-y-4">
+              <Input
+                label={t("admin_image_url")}
+                value={form.image_url}
+                onChange={(e) => setForm({ ...form, image_url: e.target.value })}
+                placeholder="/products/beer.jpg"
+              />
+              <p className="text-xs text-gray-500">
+                {t("admin_image_preview")}: public/products/ oder externe URL
+              </p>
+            </div>
+          </div>
+
           <div className="grid gap-4 sm:grid-cols-2">
             <Input
               label="Name"
@@ -96,6 +135,14 @@ export default function AdminProductsPage() {
                   </option>
                 ))}
               </select>
+            </div>
+            <div className="sm:col-span-2">
+              <Textarea
+                label={t("admin_product_desc")}
+                value={form.description ?? ""}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                placeholder="Produktbeschreibung, Inhalt, Pfandhinweise…"
+              />
             </div>
             <Input
               label="Stückpreis (€)"
@@ -161,10 +208,10 @@ export default function AdminProductsPage() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-white/10 bg-surface text-left text-gray-400">
+              <th className="px-4 py-3 w-16"></th>
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Kategorie</th>
               <th className="px-4 py-3">Stückpreis</th>
-              <th className="px-4 py-3">Kasten</th>
               <th className="px-4 py-3">Lager</th>
               <th className="px-4 py-3"></th>
             </tr>
@@ -175,7 +222,24 @@ export default function AdminProductsPage() {
                 key={product.id}
                 className="border-b border-white/5 hover:bg-white/5"
               >
-                <td className="px-4 py-3 text-white">{product.name}</td>
+                <td className="px-4 py-3">
+                  <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-white/5">
+                    <Image
+                      src={product.image_url}
+                      alt={product.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                </td>
+                <td className="px-4 py-3">
+                  <p className="text-white font-medium">{product.name}</p>
+                  {product.description && (
+                    <p className="text-xs text-gray-500 line-clamp-1 mt-0.5">
+                      {product.description}
+                    </p>
+                  )}
+                </td>
                 <td className="px-4 py-3">
                   <Badge variant="gold">
                     {getCategoryLabel(locale, product.category)}
@@ -183,9 +247,6 @@ export default function AdminProductsPage() {
                 </td>
                 <td className="px-4 py-3 text-gold">
                   {formatEuro(product.unit_price_with_pfand, fmt)}
-                </td>
-                <td className="px-4 py-3 text-gray-400">
-                  {product.units_per_case}×
                 </td>
                 <td className="px-4 py-3 text-gray-400">{product.stock}</td>
                 <td className="px-4 py-3">
@@ -197,7 +258,7 @@ export default function AdminProductsPage() {
                       <Pencil className="h-4 w-4" />
                     </button>
                     <button
-                      onClick={() => deleteProduct(product.id)}
+                      onClick={() => handleDelete(product)}
                       className="rounded p-1.5 text-gray-400 hover:text-red-400"
                     >
                       <Trash2 className="h-4 w-4" />

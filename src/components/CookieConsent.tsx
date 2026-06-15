@@ -33,7 +33,7 @@ export function CookieConsent() {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[60] p-4 sm:p-6">
+    <div className="fixed bottom-0 left-0 right-0 z-[60] p-3 safe-bottom sm:p-6">
       <div className="mx-auto flex max-w-4xl flex-col gap-4 rounded-2xl border border-gold/20 bg-surface/95 p-5 shadow-2xl shadow-black/50 backdrop-blur-md sm:flex-row sm:items-center sm:gap-6">
         <div className="flex shrink-0 items-center justify-center rounded-xl bg-gold/10 p-3 self-start">
           <Cookie className="h-6 w-6 text-gold" />

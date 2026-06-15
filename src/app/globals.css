@@ -5,10 +5,11 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    @apply bg-surface-dark text-white antialiased;
+    @apply bg-surface-dark text-white antialiased overflow-x-hidden;
   }
 
   ::selection {
@@ -36,5 +37,17 @@
 
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .page-x {
+    @apply px-4 sm:px-6 lg:px-8;
   }
 }

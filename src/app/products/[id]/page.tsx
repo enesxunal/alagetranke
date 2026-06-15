@@ -53,17 +53,17 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:py-8 lg:px-8">
       <button
         onClick={() => router.back()}
-        className="mb-6 flex items-center gap-2 text-sm text-gray-400 hover:text-gold transition-colors"
+        className="mb-4 flex items-center gap-2 text-sm text-gray-400 hover:text-gold transition-colors sm:mb-6"
       >
         <ArrowLeft className="h-4 w-4" />
         {t("back")}
       </button>
 
-      <div className="grid gap-10 lg:grid-cols-2">
-        <div className="relative aspect-square overflow-hidden rounded-2xl bg-white/5">
+      <div className="grid gap-6 lg:grid-cols-2 lg:gap-10">
+        <div className="relative aspect-square max-h-[50vh] overflow-hidden rounded-2xl bg-white/5 sm:max-h-none lg:aspect-square">
           <ProductImage
             src={product.image_url}
             alt={product.name}
@@ -77,7 +77,7 @@ export default function ProductDetailPage() {
           <Badge variant="gold" className="mb-3">
             {getCategoryLabel(locale, product.category)}
           </Badge>
-          <h1 className="text-3xl font-bold text-white">{product.name}</h1>
+          <h1 className="text-2xl font-bold text-white sm:text-3xl">{product.name}</h1>
           <p className="mt-2 text-gray-400">
             {product.units_per_case > 1
               ? `${t("products_case_info")}: ${product.units_per_case} Stück`
@@ -86,7 +86,7 @@ export default function ProductDetailPage() {
 
           {canSeePrices ? (
             <div className="mt-6">
-              <p className="text-4xl font-bold text-gold">
+              <p className="text-3xl font-bold text-gold sm:text-4xl">
                 {formatEuro(product.unit_price_with_pfand, fmt)}
               </p>
               <p className="text-sm text-gray-500">
